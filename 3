@@ -1,0 +1,72 @@
+#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+
+struct Node
+{
+    char* line;
+    Node* next;
+};
+
+void push(Node*& head, const char* line)
+{
+    Node* newNode = new Node;
+    newNode->line = (char*)malloc(strlen(line) + 1);
+    if (newNode->line)
+    {
+        strcpy(newNode->line, line);
+    }
+    newNode->next = head;
+    head = newNode;
+}
+
+void freeList(Node* head)
+{
+    while (head)
+    {
+        Node* temp = head;
+        head = head->next;
+        free(temp->line);
+        delete temp;
+    }
+}
+
+int main()
+{
+    FILE* input = fopen("input.txt", "r");
+    if (!input)
+    {
+        perror("Cannot open input file");
+        return 1;
+    }
+
+    Node* stack = nullptr;
+    char buffer[1024];
+
+    while (fgets(buffer, sizeof(buffer), input))
+    {
+        push(stack, buffer);
+    }
+
+    fclose(input);
+
+    FILE* output = fopen("output.txt", "w");
+    if (!output)
+    {
+        perror("Cannot open output file");
+        freeList(stack);
+        return 1;
+    }
+
+    Node* current = stack;
+    while (current)
+    {
+        fputs(current->line, output);
+        current = current->next;
+    }
+
+    fclose(output);
+    freeList(stack);
+
+    return 0;
+}

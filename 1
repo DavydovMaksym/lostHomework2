@@ -1,0 +1,57 @@
+#include <iostream>
+#include <cstdio>
+
+bool isLetter(char ch)
+{
+    if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+int main()
+{
+    FILE* input = fopen("input.txt", "r");
+    FILE* output = fopen("output.txt", "w");
+
+    if (!input || !output)
+    {
+        printf("Could not open files.\n");
+        return 1;
+    }
+
+    char ch;
+    char word[256];
+    int len = 0;
+
+    while ((ch = fgetc(input)) != EOF)
+    {
+        if (isLetter(ch))
+        {
+            if (len < 255)
+                word[len++] = ch;
+        }
+        else
+        {
+            if (len >= 7)
+            {
+                word[len] = '\0';
+                fprintf(output, "%s\n", word);
+            }
+            len = 0;
+        }
+    }
+    if (len >= 7)
+    {
+        word[len] = '\0';
+        fprintf(output, "%s\n", word);
+    }
+
+    fclose(input);
+    fclose(output);
+
+    printf("Check the file output.txt\n");
+    return 0;
+}

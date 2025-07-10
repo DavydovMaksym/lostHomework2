@@ -1,0 +1,35 @@
+#include <iostream>
+#include <cstdio>
+
+int main()
+{
+    const char* inputFileName = "input.txt";
+    const char* outputFileName = "output.txt";
+
+    FILE* input = fopen(inputFileName, "r");
+    if (!input)
+    {
+        printf("Could not open input file..\n");
+        return 1;
+    }
+
+    FILE* output = fopen(outputFileName, "w");
+    if (!output)
+    {
+        printf("Could not open source file.\n");
+        fclose(input);
+        return 1;
+    }
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), input))
+    {
+        fputs(buffer, output);
+    }
+
+    fclose(input);
+    fclose(output);
+
+    printf("The lines were successfully copied to a new file..\n");
+    return 0;
+}
